@@ -1,32 +1,12 @@
-MySQL to PostgreSQL Converter
+MySQL to ADB PG Converter
 =============================
+## 使用步骤
+1. 使用mysqldump dump出PG兼容的MySQL建表语句（修改下面语句中的databasename和dumpfile.sql），此处dump语句很重要，一定要转为PG兼容的建表语句：
 
-Lanyrd's MySQL to PostgreSQL conversion script. Use with care.
+`mysqldump --opt --compatible=postgresql --default-character-set=utf8 -d databasename -r dumpfile.sql -u username -p`
 
-This script was designed for our specific database and column requirements -
-notably, it doubles the lengths of VARCHARs due to a unicode size problem we
-had, places indexes on all foreign keys, and presumes you're using Django
-for column typing purposes.
+2. 执行转换脚本，dumpfile.sql和adbforpg.sql填写真实的值
 
-How to use
-----------
+`python db_converter.py dumpfile.sql adbforpg.sql`
 
-First, dump your MySQL database in PostgreSQL-compatible format
-
-    mysqldump --compatible=postgresql --default-character-set=utf8 \
-    -r databasename.mysql -u root databasename
-
-Then, convert it using the dbconverter.py script
-
-`python db_converter.py databasename.mysql databasename.psql`
-
-It'll print progress to the terminal.
-
-Finally, load your new dump into a fresh PostgreSQL database using: 
-
-`psql -f databasename.psql`
-
-More information
-----------------
-
-You can learn more about the move which this powered at http://lanyrd.com/blog/2012/lanyrds-big-move/ and some technical details of it at http://www.aeracode.org/2012/11/13/one-change-not-enough/.
+adbforpg.sql是转换后的ADB for PG的建表语句，如果需要有需改需求，可以直接在文件中进行修改。重点要关注一下分布列的选择，默认选择MySQL表中的主键作为分布列，如果MySQL表结构中无主键，请手动修改选择分布列。
