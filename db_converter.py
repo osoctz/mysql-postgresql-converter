@@ -167,8 +167,6 @@ def parse(input_filename, output_filename):
             elif line.startswith("PRIMARY KEY"):
                 creation_lines.append(line.rstrip(",").lower())
                 primary_key = line.split("(")[1].split(")")[0].lower()
-            elif line.startswith("UNIQUE KEY"):
-                creation_lines.append("UNIQUE (%s)" % line.split("(")[1].split(")")[0].lower())
             elif line.startswith("KEY"):
                 index_lines.append("CREATE INDEX %s on \"%s\" (%s)" % (line.split(" ")[1], current_table, line.split("(")[1].split(")")[0].lower()))
             # Is it the end of the table?
